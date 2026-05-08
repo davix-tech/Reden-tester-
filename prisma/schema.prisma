@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  image       String
+  createdAt   DateTime @default(now())
+}
+
+model Decision {
+  id          String   @id @default(cuid())
+  type        String
+  selected    String
+  confidence  Float
+  createdAt   DateTime @default(now())
+
+  outcomes    Outcome[]
+}
+
+model Outcome {
+  id          String   @id @default(cuid())
+  decisionId  String
+  success     Boolean
+  reward      Float
+  createdAt   DateTime @default(now())
+
+  decision    Decision @relation(fields: [decisionId], references: [id])
+}
+
+model EventLog {
+  id          String   @id @default(cuid())
+  eventType   String
+  metadata    String
+  createdAt   DateTime @default(now())
+}
